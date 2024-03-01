@@ -10,14 +10,14 @@ remote_path = '/bkp'
 local_path = '/srv/ftp/BACKUP'
 
 def excluir_arquivos_similares(nome_arquivo):
-    # Extrai a parte do identificador do nome do arquivo, ignorando a data e a hora
-    match = re.match(r"(cli_emp\d+)-.*", nome_arquivo)
+    # Extrai o prefixo e tipo do arquivo, ignorando a data e a hora
+    match = re.match(r"(cli_emp\d+-(?:rad1-radius|uploads|rad2-radius)).*", nome_arquivo)
     if match:
-        identificador = match.group(1)
+        prefixo_tipo = match.group(1)
         # Lista todos os arquivos no diretório local
         for arquivo_local in os.listdir(local_path):
-            # Verifica se o arquivo local contém o identificador
-            if re.match(rf"{identificador}.*\.zip", arquivo_local):
+            # Verifica se o arquivo local contém o prefixo e tipo
+            if re.match(rf"{re.escape(prefixo_tipo)}-.*\.zip", arquivo_local):
                 # Caminho completo do arquivo a ser excluído
                 arquivo_para_excluir = os.path.join(local_path, arquivo_local)
                 print(f"Excluindo arquivo existente: {arquivo_para_excluir}")
